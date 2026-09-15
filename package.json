@@ -1,0 +1,24 @@
+{
+  "name": "kaggriculture-mcts-agent",
+  "version": "1.0.0",
+  "description": "Hierarchical Monte Carlo Tree Search Agent for Kaggriculture Simulation Competition",
+  "main": "src/mcts_agent.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/verify_kaggriculture.js",
+    "start": "node test/verify_kaggriculture.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "kaggriculture",
+    "mcts",
+    "reinforcement-learning",
+    "multi-agent",
+    "simulation",
+    "game-theory",
+    "kaggle"
+  ],
+  "author": "Antigravity Builder",
+  "license": "MIT"
+}
