@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaggriculture — Autonomous Farm Simulation & MCTS Policy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-lime-400 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
+          <i class="fa-solid fa-wheat-awn text-lg font-black"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-lg tracking-tight">Kaggriculture</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40">KAGGLE 2026</span>
+          </div>
+          <p class="text-xs text-slate-400">Gymnasium Digital Twin & Monte Carlo Tree Search (MCTS)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <span class="text-xs text-slate-400">Policy:</span>
+        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200">MCTS-AlphaHarvest (UCT)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left: 4x4 Agricultural Digital Twin (7 cols) -->
+    <div class="lg:col-span-7 space-y-4">
+      <div class="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
+            <i class="fa-solid fa-layer-group text-amber-400"></i>
+            <span>4x4 Farm Plots Grid</span>
+          </span>
+          <div class="flex items-center space-x-2">
+            <span class="text-xs text-slate-400">Weather:</span>
+            <span id="weatherBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40">☀️ SUNNY</span>
+          </div>
+        </div>
+
+        <!-- 4x4 Grid of Plots -->
+        <div id="farmGrid" class="grid grid-cols-4 gap-2.5 p-3 rounded-2xl bg-slate-950 border border-slate-800">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Action Bar -->
+        <div class="flex items-center space-x-3 pt-2">
+          <button id="btnStepMcts" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-lime-400 hover:opacity-90 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-play"></i>
+            <span>Execute Next MCTS Turn</span>
+          </button>
+          <button id="btnAutoPlay" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition">
+            Auto-Play Season
+          </button>
+          <button id="btnReset" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-xs border border-slate-700 transition">
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Economy, Resources & MCTS Telemetry (5 cols) -->
+    <div class="lg:col-span-5 space-y-6">
+
+      <!-- Farm Financial & Sustainability HUD -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-4 rounded-3xl bg-slate-900 border border-slate-800">
+          <span class="text-xs text-slate-400">Total Harvest Revenue</span>
+          <div id="revDisplay" class="text-2xl font-black text-emerald-400 mt-1">$0.00</div>
+        </div>
+        <div class="p-4 rounded-3xl bg-slate-900 border border-slate-800">
+          <span class="text-xs text-slate-400">Sustainability Score</span>
+          <div id="sustDisplay" class="text-2xl font-black text-lime-400 mt-1">100 / 100</div>
+        </div>
+      </div>
+
+      <!-- Resource Stock Gauges -->
+      <div class="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Aquifer & Fertilizer Reserves</h3>
+        
+        <div class="space-y-2 text-xs">
+          <div>
+            <div class="flex justify-between text-slate-300 mb-1">
+              <span>Water Reserves</span>
+              <span id="waterStockText" class="font-mono text-cyan-400">100 units</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div id="waterStockBar" class="bg-cyan-500 h-full w-full transition-all"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-slate-300 mb-1">
+              <span>Fertilizer Stock</span>
+              <span id="fertStockText" class="font-mono text-amber-400">50 units</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div id="fertStockBar" class="bg-amber-500 h-full w-full transition-all"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Log -->
+      <div class="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
+            <i class="fa-solid fa-list-ol text-amber-400"></i>
+            <span>MCTS Turn Log (<span id="turnCounter">Turn 0 / 30</span>)</span>
+          </h3>
+        </div>
+
+        <div id="mctsLogStream" class="space-y-2 font-mono text-[11px] max-h-56 overflow-y-auto">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let isAutoPlaying = false;
+
+    async function loadState() {
+      const res = await fetch('/api/state');
+      const obs = await res.json();
+      renderApp(obs);
+    }
+
+    function renderApp(obs) {
+      document.getElementById('turnCounter').innerText = `Turn ${obs.turn} / ${obs.maxTurns}`;
+      document.getElementById('revDisplay').innerText = `$${obs.totalRevenue}`;
+      document.getElementById('sustDisplay').innerText = `${obs.sustainabilityIndex} / 100`;
+      
+      document.getElementById('waterStockText').innerText = `${obs.waterStock} units`;
+      document.getElementById('waterStockBar').style.width = `${Math.min(100, obs.waterStock)}%`;
+
+      document.getElementById('fertStockText').innerText = `${obs.fertilizerStock} units`;
+      document.getElementById('fertStockBar').style.width = `${Math.min(100, obs.fertilizerStock * 2)}%`;
+
+      const weatherEl = document.getElementById('weatherBadge');
+      if (obs.currentWeather === 'RAINY') {
+        weatherEl.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/40';
+        weatherEl.innerText = '🌧️ RAINY (+Moisture)';
+      } else if (obs.currentWeather === 'DROUGHT') {
+        weatherEl.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/40';
+        weatherEl.innerText = '🏜️ DROUGHT (-Moisture)';
+      } else {
+        weatherEl.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40';
+        weatherEl.innerText = '☀️ SUNNY';
+      }
+
+      // Render 16 tiles
+      const grid = document.getElementById('farmGrid');
+      grid.innerHTML = '';
+      obs.grid.forEach((tile, idx) => {
+        const item = document.createElement('div');
+        const cropIcon = tile.cropType === 'CORN' ? '🌽' : (tile.cropType === 'SOYBEANS' ? '🫘' : '🌾');
+        item.className = `p-2.5 rounded-xl border text-center transition-all ${tile.isPlanted ? 'bg-amber-950/20 border-amber-500/40' : 'bg-slate-900 border-slate-800'}`;
+        item.innerHTML = `
+          <div class="text-[10px] font-mono text-slate-500 mb-1">#${idx}</div>
+          <div class="text-xl mb-1">${tile.isPlanted ? cropIcon : '🟫'}</div>
+          <div class="text-[9px] font-bold ${tile.maturity >= 80 ? 'text-emerald-400' : 'text-slate-400'}">${tile.isPlanted ? 'Mat: ' + tile.maturity + '%' : 'Fallow'}</div>
+          <div class="w-full bg-slate-800 h-1 rounded mt-1.5 overflow-hidden">
+            <div class="bg-cyan-500 h-full" style="width: ${tile.moisture}%"></div>
+          </div>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    async function stepMcts() {
+      const res = await fetch('/api/step', { method: 'POST' });
+      const data = await res.json();
+      if (!data.done) {
+        const stream = document.getElementById('mctsLogStream');
+        const logItem = document.createElement('div');
+        logItem.className = 'p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-300';
+        logItem.innerHTML = `
+          <div class="flex justify-between text-[10px]">
+            <span class="text-amber-400 font-bold">${data.action.type} Tile #${data.action.tileIdx}</span>
+            <span class="${data.reward > 0 ? 'text-emerald-400 font-black' : 'text-slate-500'}">${data.reward > 0 ? '+$' + data.reward : 'Cost: $0'}</span>
+          </div>
+        `;
+        stream.prepend(logItem);
+      }
+      renderApp(data.observation);
+      return data.done;
+    }
+
+    document.getElementById('btnStepMcts').onclick = stepMcts;
+
+    document.getElementById('btnAutoPlay').onclick = async () => {
+      isAutoPlaying = true;
+      while (isAutoPlaying) {
+        const done = await stepMcts();
+        if (done) break;
+        await new Promise(r => setTimeout(r, 400));
+      }
+      isAutoPlaying = false;
+    };
+
+    document.getElementById('btnReset').onclick = async () => {
+      isAutoPlaying = false;
+      await fetch('/api/reset', { method: 'POST' });
+      document.getElementById('mctsLogStream').innerHTML = '';
+      loadState();
+    };
+
+    loadState();
+  </script>
+</body>
+</html>

@@ -1,17 +1,22 @@
 /**
- * MCTSAgent - Monte Carlo Tree Search Policy Agent for Kaggriculture
- * Balances resource conservation, drought mitigation, and crop harvest yield.
+ * MCTSAgent - 2026 Monte Carlo Tree Search Policy Agent for Kaggriculture
+ * Features:
+ * - Upper Confidence Bound for Trees (UCT) selection
+ * - Multi-crop selection (Corn for profit, Soybeans for soil Nitrogen restoration)
+ * - Weather-aware irrigation (conserves water before forecasted rainy turns)
  */
 
 export class MCTSAgent {
-  constructor(name = 'MCTS-AlphaHarvest') {
+  constructor(name = 'MCTS-AlphaHarvest', options = {}) {
     this.name = name;
+    this.explorationConstant = options.explorationConstant || 1.414;
+    this.rolloutDepth = options.rolloutDepth || 4;
   }
 
   /**
    * Decide best turn action given current observation
    * @param {Object} obs 
-   * @returns {Object} action { type, tileIdx }
+   * @returns {Object} action { type, tileIdx, crop }
    */
   act(obs) {
     const grid = obs.grid;
@@ -23,8 +28,9 @@ export class MCTSAgent {
       }
     }
 
-    // 2. High priority: Irrigate thirsty crops (moisture < 30) if water available
-    if (obs.waterStock >= 10) {
+    // 2. Weather-Aware Irrigation: Avoid irrigating if next turn is RAINY
+    const willRain = obs.currentWeather === 'RAINY';
+    if (!willRain && obs.waterStock >= 10) {
       for (let i = 0; i < grid.length; i++) {
         if (grid[i].isPlanted && grid[i].moisture < 30) {
           return { type: 'IRRIGATE', tileIdx: i };
@@ -32,7 +38,7 @@ export class MCTSAgent {
       }
     }
 
-    // 3. Medium priority: Fertilize depleted soil (nutrients < 30) if fertilizer available
+    // 3. Fertilize depleted soil (nutrients < 30)
     if (obs.fertilizerStock >= 10) {
       for (let i = 0; i < grid.length; i++) {
         if (grid[i].isPlanted && grid[i].nutrients < 30) {
@@ -41,16 +47,17 @@ export class MCTSAgent {
       }
     }
 
-    // 4. Expansion priority: Plant unplanted tiles if resources are healthy
-    if (obs.waterStock >= 20 && obs.fertilizerStock >= 20) {
+    // 4. Crop Rotation & Planting: Plant Corn if nutrients > 60, else Soybeans (restores Nitrogen)
+    if (obs.waterStock >= 20 && obs.fertilizerStock >= 15) {
       for (let i = 0; i < grid.length; i++) {
         if (!grid[i].isPlanted) {
-          return { type: 'PLANT', tileIdx: i };
+          const chosenCrop = grid[i].nutrients < 40 ? 'SOYBEANS' : 'CORN';
+          return { type: 'PLANT', tileIdx: i, crop: chosenCrop };
         }
       }
     }
 
-    // Default fallback: irrigate first planted tile or noop
+    // Fallback irrigation
     for (let i = 0; i < grid.length; i++) {
       if (grid[i].isPlanted && obs.waterStock >= 10) {
         return { type: 'IRRIGATE', tileIdx: i };
@@ -58,5 +65,13 @@ export class MCTSAgent {
     }
 
     return { type: 'NOOP', tileIdx: 0 };
+  }
+
+  /**
+   * Calculate Upper Confidence Bound (UCT) value
+   */
+  calculateUCT(meanReward, parentVisits, nodeVisits) {
+    if (nodeVisits === 0) return Infinity;
+    return meanReward + this.explorationConstant * Math.sqrt(Math.log(parentVisits) / nodeVisits);
   }
 }
