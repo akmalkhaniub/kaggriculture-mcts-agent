@@ -5,8 +5,12 @@
   "main": "src/mcts_agent.js",
   "type": "module",
   "scripts": {
+    "start": "node src/server.js",
     "test": "node test/verify_kaggriculture.js",
-    "start": "node test/verify_kaggriculture.js"
+    "docker:build": "docker build -t kaggriculture-mcts-agent:latest .",
+    "docker:run": "docker run -d -p 3010:3010 --name kaggriculture-mcts-agent kaggriculture-mcts-agent:latest",
+    "docker:compose": "docker compose up -d",
+    "tunnel": "powershell -ExecutionPolicy Bypass -File deploy/free/tunnel.ps1"
   },
   "dependencies": {},
   "devDependencies": {},
