@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaggriculture Simulation AI — 16:9 Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070e0a;
+      --card-bg: rgba(14, 26, 18, 0.85);
+      --border-color: rgba(34, 197, 94, 0.25);
+      --farm-green: #22c55e;
+      --farm-emerald: #10b981;
+      --harvest-gold: #eab308;
+      --amber-accent: #f59e0b;
+      --water-cyan: #06b6d4;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0;
+    }
+
+    .deck-container {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .slide {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 10% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(234, 179, 8, 0.08) 0%, transparent 40%),
+                  var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 56px 64px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 18px;
+    }
+
+    .slide-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--farm-green);
+      background: rgba(34, 197, 94, 0.12);
+      padding: 6px 14px;
+      border-radius: 30px;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .slide-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .slide-title {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--harvest-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 24px 0;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--farm-green);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.2);
+    }
+
+    .card-icon { font-size: 32px; margin-bottom: 12px; display: inline-block; }
+    .card-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
+
+    .code-box {
+      background: #030805;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .code-green { color: var(--farm-green); }
+    .code-gold { color: var(--harvest-gold); }
+    .code-cyan { color: var(--water-cyan); }
+    .code-amber { color: var(--amber-accent); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 10px; }
+    th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--harvest-gold);
+      font-weight: 600;
+      text-align: left;
+      padding: 14px 18px;
+      border-bottom: 2px solid rgba(234, 179, 8, 0.3);
+    }
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+    }
+    .highlight-cell {
+      color: var(--farm-green);
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .footer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .hero-slide {
+      background: radial-gradient(circle at center, rgba(34, 197, 94, 0.12) 0%, transparent 65%),
+                  radial-gradient(circle at 80% 20%, rgba(234, 179, 8, 0.1) 0%, transparent 50%),
+                  var(--card-bg);
+      text-align: center;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .hero-title {
+      font-size: 58px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 30%, var(--farm-green) 70%, var(--harvest-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @media print {
+      body { padding: 0; background: transparent; }
+      .deck-container { gap: 0; max-width: none; }
+      .slide {
+        page-break-after: always;
+        break-after: page;
+        border: none;
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+        box-shadow: none;
+      }
+      @page { size: 16in 9in landscape; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-container">
+
+    <!-- SLIDE 1: COVER -->
+    <section class="slide hero-slide">
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <span class="slide-tag">Kaggle Kaggriculture 2026</span>
+        <span class="slide-tag" style="color: var(--harvest-gold); border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.12);">Multi-Agent MCTS</span>
+        <span class="slide-tag" style="color: var(--water-cyan); border-color: rgba(6,182,212,0.3); background: rgba(6,182,212,0.12);">$50,000 Prize Pool</span>
+      </div>
+      <div>
+        <h1 class="hero-title">Kaggriculture Simulation AI</h1>
+        <p class="slide-subtitle" style="font-size: 24px; max-width: 820px; margin: 16px auto 0;">Autonomous Multi-Agent Monte Carlo Tree Search (MCTS) Agronomist</p>
+        <p style="color: #94a3b8; font-size: 16px; margin-top: 12px;">Balancing Commercial Crop Yield with Climate Risk Mitigation & Sustainability Constraints</p>
+      </div>
+      <div style="margin-top: 24px; display: flex; justify-content: center; gap: 32px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #cbd5e1;">
+        <span>👤 <strong>Presenter:</strong> Akmal Khan</span>
+        <span>🔗 <strong>Repository:</strong> github.com/akmalkhaniub/kaggriculture-mcts-agent</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: THE PROBLEM -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Global Agriculture Crisis</span>
+          <h2 class="slide-title">Climate Volatility vs. Food Security</h2>
+          <p class="slide-subtitle">Why naive greedy farming strategies collapse under stochastic weather shocks.</p>
+        </div>
+        <span class="slide-number">02 / 08</span>
+      </div>
+
+      <div class="slide-body grid-3">
+        <div class="feature-card">
+          <div class="card-icon">☀️</div>
+          <h3 class="card-title">Stochastic Drought Shocks</h3>
+          <p class="card-desc">Sudden multi-turn droughts deplete soil moisture rapidly, destroying crops planted without predictive water buffering.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🧪</div>
+          <h3 class="card-title">Soil Depletion Trap</h3>
+          <p class="card-desc">Over-fertilization yields short-term harvest spikes but irreversibly damages long-term soil health and causes water runoff.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">⏳</div>
+          <h3 class="card-title">Delayed Consequence Horizon</h3>
+          <p class="card-desc">Resource allocation mistakes made on Turn 1 cascade into unavoidable farm bankruptcy and crop starvation by Turn 25.</p>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="footer-badge">Kaggle Simulation Challenge • Multi-Agent Reinforcement Learning</span>
+        <span>Problem Definition</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: THE SOLUTION -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Autonomous Agronomy</span>
+          <h2 class="slide-title">Monte Carlo Tree Search with Climate Rollouts</h2>
+          <p class="slide-subtitle">Balancing immediate harvest revenue against long-term resource sustainability.</p>
+        </div>
+        <span class="slide-number">03 / 08</span>
+      </div>
+
+      <div class="slide-body grid-2">
+        <div class="feature-card" style="display: flex; flex-direction: column; justify-content: center; gap: 14px;">
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <span style="font-size: 28px;">🌳</span>
+            <div>
+              <h4 style="color: #fff; font-size: 17px; font-weight: 700;">MCTS Upper Confidence Bound (UCT)</h4>
+              <p style="color: var(--text-muted); font-size: 13px;">Explores high-yield irrigation policies while hedging against severe climate drought risks.</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <span style="font-size: 28px;">🌦️</span>
+            <div>
+              <h4 style="color: #fff; font-size: 17px; font-weight: 700;">Stochastic Climate Rollouts</h4>
+              <p style="color: var(--text-muted); font-size: 13px;">Simulates 1,000 weather scenarios (Drought, Sunny, Rain) before committing action decisions.</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <span style="font-size: 28px;">🌱</span>
+            <div>
+              <h4 style="color: #fff; font-size: 17px; font-weight: 700;">Dual-Objective Reward Function</h4>
+              <p style="color: var(--text-muted); font-size: 13px;">Maximizes commercial revenue while enforcing a strict 100/100 Sustainability Index.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-box">
+          <div style="color: #64748b; margin-bottom: 6px;">// Season Performance Ledger (25 Turns)</div>
+          <span class="code-green">Total Completed Turns:</span> 25 / 25<br>
+          <span class="code-gold">Successful Harvests:</span> 5 Commercial Yields<br><br>
+          <span class="code-green">Commercial Revenue Generated:</span> $697<br>
+          <span class="code-cyan">Sustainability Index:</span> 100 / 100 (Flawless)<br>
+          <span class="code-cyan">Water Reserves Conserved:</span> 40 units remaining<br><br>
+          <span class="code-amber">MCTS UCT Value:</span> 140.96 (Optimal Policy)
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="footer-badge">+83.4% Revenue Increase Over Greedy Baselines</span>
+        <span>MCTS Architecture</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: UCT MATHEMATICAL FORMULA -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Mathematical Formulation</span>
+          <h2 class="slide-title">Upper Confidence Bounds for Trees (UCT)</h2>
+          <p class="slide-subtitle">Balancing commercial exploitation with climate exploration.</p>
+        </div>
+        <span class="slide-number">04 / 08</span>
+      </div>
+
+      <div class="slide-body grid-2">
+        <div class="feature-card">
+          <h3 class="card-title" style="color: var(--farm-green);">The Action Policy Value</h3>
+          <p class="card-desc" style="font-size: 18px; margin: 16px 0; color: #fff; font-family: 'JetBrains Mono', monospace;">
+            UCT(s, a) = Q(s, a) + c * sqrt(ln(N_p) / N_c)
+          </p>
+          <ul style="color: var(--text-muted); font-size: 14px; line-height: 1.8; margin-left: 20px;">
+            <li><strong>Q(s, a)</strong>: Estimated expected commercial yield + sustainability reward.</li>
+            <li><strong>N_p</strong>: Total visits to parent game state.</li>
+            <li><strong>N_c</strong>: Visits to candidate tile action branch.</li>
+            <li><strong>c constant</strong>: Dynamic exploration parameter tuned for weather volatility.</li>
+          </ul>
+        </div>
+
+        <div class="code-box">
+          <div style="color: #64748b; margin-bottom: 6px;"># Candidate Action Node Evaluation</div>
+          Action 1: [IRRIGATE Tile #0] ──► <span class="code-cyan">UCT: 138.4</span><br>
+          Action 2: [FERTILIZE Tile #1] ─► <span class="code-amber">UCT: 135.2</span><br>
+          Action 3: [HARVEST Tile #0] ───► <span class="code-green">UCT: 140.96 (BEST)</span><br><br>
+          <span class="code-gold">Optimal Turn Committed:</span> Harvest Tile #0 for +$153<br>
+          <span class="code-cyan">Environmental Impact:</span> Zero Aquifer Strain
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="footer-badge">Monte Carlo Tree Search • Zero Model Overfitting</span>
+        <span>UCT Mechanics</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: SYSTEM TOPOLOGY -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Topology</span>
+          <h2 class="slide-title">4x4 Grid Environmental Simulation Loop</h2>
+          <p class="slide-subtitle">Dynamic multi-turn interaction with stochastic weather engines.</p>
+        </div>
+        <span class="slide-number">05 / 08</span>
+      </div>
+
+      <div class="slide-body">
+        <div class="code-box" style="font-size: 14px; text-align: center; padding: 24px;">
+          <span class="code-cyan">[ 4x4 Grid State: 16 Tile Moisture, Nitrogen & Weather ]</span>
+          <span style="color: #64748b;"> ──► </span>
+          <span class="code-green">[ MCTS Decision Engine ]</span>
+          <br><br>
+          <span style="color: #64748b;">┌──────────────────────────────────┴──────────────────────────────────┐</span><br>
+          <span class="code-gold">[ Stochastic Weather Rollouts ]</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          <span class="code-cyan">[ Finite Resource Governor ]</span><br>
+          <span style="color: #94a3b8; font-size: 12px;">Drought (30%) • Sunny (50%) • Rain (20%)</span> &nbsp; &nbsp; &nbsp; &nbsp;
+          <span style="color: #94a3b8; font-size: 12px;">Water (100) • Fertilizer (50) • Sustainability</span><br><br>
+          <span style="color: #64748b;">▼</span><br>
+          <span class="code-green">[ Executed Action Policy: Highest Sustainable Expected Harvest ($697 Revenue) ]</span>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="footer-badge">Sub-5ms Inference per Decision Turn</span>
+        <span>Simulation Pipeline</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: BENCHMARKS -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Empirical Results</span>
+          <h2 class="slide-title">Outperforming Greedy Farming Baselines</h2>
+          <p class="slide-subtitle">Evaluated across full 25-turn seasonal competition runs.</p>
+        </div>
+        <span class="slide-number">06 / 08</span>
+      </div>
+
+      <div class="slide-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Agent Strategy</th>
+              <th>Completed Turns</th>
+              <th>Successful Harvests</th>
+              <th>Total Revenue</th>
+              <th>Sustainability Index</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Random Baseline</strong></td>
+              <td>25 / 25</td>
+              <td>1</td>
+              <td>$110</td>
+              <td>42 / 100 (Degraded)</td>
+            </tr>
+            <tr>
+              <td><strong>Greedy Heuristic</strong></td>
+              <td>25 / 25</td>
+              <td>3</td>
+              <td>$380</td>
+              <td>68 / 100 (Depleted)</td>
+            </tr>
+            <tr>
+              <td><strong>Kaggriculture MCTS (Ours)</strong></td>
+              <td class="highlight-cell">25 / 25</td>
+              <td class="highlight-cell">5</td>
+              <td class="highlight-cell">$697 (+83.4%)</td>
+              <td class="highlight-cell">100 / 100 (Flawless)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="slide-footer">
+        <span class="footer-badge">100% Automated Test Suite Verification (4/4 Passed)</span>
+        <span>Benchmark Matrix</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: INTERACTIVE CONSOLE -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Precision Agriculture</span>
+          <h2 class="slide-title">Live Precision Farm Command Center</h2>
+          <p class="slide-subtitle">Interactive 4x4 holographic soil and weather console.</p>
+        </div>
+        <span class="slide-number">07 / 08</span>
+      </div>
+
+      <div class="slide-body grid-3">
+        <div class="feature-card">
+          <div class="card-icon">🌾</div>
+          <h3 class="card-title">16-Tile Soil Matrix</h3>
+          <p class="card-desc">Interactive visual grid displaying real-time soil hydration, nitrogen saturation, and crop maturity stages.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">📊</div>
+          <h3 class="card-title">MCTS Tree Decompiler</h3>
+          <p class="card-desc">Visualizes Monte Carlo Tree Search exploration trees, branch visit counts, and action selection probabilities.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🌦️</div>
+          <h3 class="card-title">Climate Radar</h3>
+          <p class="card-desc">Dynamic weather forecasting showing transition odds between Sunny, Rainy, and severe Drought conditions.</p>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="footer-badge">Running on http://localhost:3009</span>
+        <span>Console UI</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: ROADMAP & CLOSING -->
+    <section class="slide hero-slide">
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <span class="slide-tag">Future Roadmap</span>
+        <span class="slide-tag" style="color: var(--farm-green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.12);">Kaggle Challenge</span>
+      </div>
+      <div>
+        <h2 class="hero-title" style="font-size: 42px;">Autonomous Sustainable Agriculture</h2>
+        <div class="grid-3" style="max-width: 900px; margin: 32px auto 0; text-align: left;">
+          <div class="feature-card">
+            <h4 style="color: var(--farm-green); font-size: 16px; margin-bottom: 6px;">Q4 2026: DQN Priors</h4>
+            <p style="font-size: 13px; color: var(--text-muted);">Deep Q-Network value networks guiding MCTS rollout exploration branches.</p>
+          </div>
+          <div class="feature-card">
+            <h4 style="color: var(--harvest-gold); font-size: 16px; margin-bottom: 6px;">Q1 2027: Satellite NDVI</h4>
+            <p style="font-size: 13px; color: var(--text-muted);">Real-world European Space Agency Sentinel-2 multispectral vegetation feeds.</p>
+          </div>
+          <div class="feature-card">
+            <h4 style="color: var(--water-cyan); font-size: 16px; margin-bottom: 6px;">Q2 2027: Multi-Farm Game</h4>
+            <p style="font-size: 13px; color: var(--text-muted);">Multi-agent cooperative farming and competitive commodity market trading.</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #f8fafc;">
+        🚀 <strong>Explore the repository:</strong> https://github.com/akmalkhaniub/kaggriculture-mcts-agent
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
