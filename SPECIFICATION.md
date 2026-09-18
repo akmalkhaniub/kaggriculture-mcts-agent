@@ -1,6 +1,8 @@
 # Technical Specification: Hierarchical MCTS Agricultural Agent
 **Project Name:** Hierarchical MCTS Agricultural Agent (Kaggriculture Simulation)  
-**Status:** Ready for Implementation  
+**Status:** Prototype implemented — spec is target design (updated 2026-09-18)  
+
+> **Implementation status (2026-09-18):** Rebuilt from the Node prototype (now under `legacy-js/`) into a pure-Python package (`kaggriculture/`): a clonable digital-twin environment, a ported greedy heuristic, and a **genuine UCT MCTS** planner that uses `env.clone()` as a forward model, plus a tournament harness and a Kaggle `submission/main.py` agent. 7 pytest cases pass. Not built: a neural policy-value network / self-play training loop - this is a strong simulation baseline.
 **Version:** 1.0.0  
 
 ---
