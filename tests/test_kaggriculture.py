@@ -63,3 +63,15 @@ def test_uct_value_monotonicity():
     hi = MCTSAgent.uct_value(1.0, parent_visits=100, node_visits=1)
     lo = MCTSAgent.uct_value(1.0, parent_visits=100, node_visits=50)
     assert hi > lo
+
+
+def test_elo_tournament_mcts_leads_random_trails():
+    from kaggriculture import Tournament, RandomAgent, GreedyAgent, MCTSAgent
+    table = Tournament([MCTSAgent(iterations=50, seed=0), GreedyAgent(), RandomAgent(seed=1)], episodes=8).run()
+    assert len(table) == 3
+    # Stable signals over a small tournament: MCTS is the top-rated agent, and random
+    # play earns the least revenue on average. (Elo of Greedy vs Random can flip on a
+    # few seeds — that divergence from mean-revenue is expected and not asserted.)
+    assert table[0].name == "MCTS", f"expected MCTS top, got {[s.name for s in table]}"
+    rand = next(s for s in table if s.name == "Random")
+    assert rand.mean_revenue == min(s.mean_revenue for s in table)

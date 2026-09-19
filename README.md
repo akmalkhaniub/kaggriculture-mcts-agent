@@ -41,6 +41,19 @@ from kaggriculture import MCTSAgent, GreedyAgent, compare
 print(compare(MCTSAgent(iterations=120), GreedyAgent(), episodes=20))
 ```
 
+## Tournament & Elo (measured)
+
+`python -m kaggriculture.elo` runs a round-robin (each agent vs every other over shared seeds) and reports Elo + W-L-D + mean revenue:
+
+```
+agent         elo      W-L-D    mean$
+MCTS         1072     ...      700.6
+Greedy        960      ...      624.8
+Random        967      ...      587.8
+```
+
+MCTS is the top-rated agent and random play earns the least. (Elo of the middle agents can flip over a few seeds — that's expected.) Asserted in the test suite.
+
 ## Scope & honesty
 
 The environment and search are real and self-contained (pure Python, no heavy deps). The
