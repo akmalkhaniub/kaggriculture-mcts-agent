@@ -25,8 +25,10 @@ model.
   **`MCTSAgent`**: UCT selection + expansion, greedy-policy rollouts via `env.clone()`,
   and value backpropagation. Picks the root child with the best average return.
 - **`tournament.py`** — episode runner and head-to-head comparison over seeds.
-- **`submission/main.py`** — the Kaggle `agent(observation, configuration)` entry point
-  (uses the fast greedy policy; MCTS is used for offline self-play/tuning).
+- **`submission/main.py`** — the Kaggle `agent(observation, configuration)` entry point.
+  It rebuilds the local env with `from_observation` and runs a time-capped MCTS
+  (40 iterations). No official simulator spec was in this repo, and there is no
+  public leaderboard score. One local episode (seed 0) finished at revenue 272.
 
 ## Run
 

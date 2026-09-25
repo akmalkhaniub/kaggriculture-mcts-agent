@@ -69,6 +69,34 @@ class AgriculturalSimEnv:
     def clone(self) -> "AgriculturalSimEnv":
         return copy.deepcopy(self)
 
+    @classmethod
+    def from_observation(cls, obs: dict) -> "AgriculturalSimEnv":
+        """Rebuild a forward model from a harness observation so MCTS can plan.
+
+        The official Kaggriculture spec is not in this repo. This matches the
+        local simulator's observation() shape. Stochastic RNG state is not recovered.
+        """
+        grid = obs.get("grid") or []
+        side = int(len(grid) ** 0.5) or 4
+        env = cls(grid_size=side, max_turns=int(obs.get("maxTurns", 30)), stochastic=False)
+        env.current_turn = int(obs.get("turn", 0))
+        env.revenue = int(obs.get("totalRevenue", 0))
+        env.water_stock = int(obs.get("waterStock", 0))
+        env.fertilizer_stock = int(obs.get("fertilizerStock", 0))
+        env.current_weather = str(obs.get("currentWeather", "SUNNY"))
+        env.environmental_runoff = int(obs.get("environmentalRunoff", 0))
+        env.grid = [
+            Tile(
+                moisture=int(t.get("moisture", 50)),
+                nutrients=int(t.get("nutrients", 50)),
+                maturity=int(t.get("maturity", 0)),
+                is_planted=bool(t.get("isPlanted", False)),
+                crop_type=t.get("cropType"),
+            )
+            for t in grid
+        ]
+        return env
+
     def observation(self) -> dict:
         return {
             "turn": self.current_turn,

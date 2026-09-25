@@ -10,7 +10,7 @@
 ## 📌 Abstract
 Managing agricultural resources under deep climate uncertainty requires balancing near-term commercial profitability with long-term ecological soil preservation. Greedy decision policies inevitably lead to resource exhaustion and crop death during sudden drought periods.
 
-In this work, we present **Kaggriculture Simulation AI**, an autonomous decision agent developed for the Kaggle Kaggriculture Simulation Challenge. Operating on a 4x4 spatial soil grid (16 plots), our agent employs **Monte Carlo Tree Search (MCTS)** augmented with the **Upper Confidence Bounds for Trees (UCT)** formula to navigate multi-horizon actions (planting, irrigation, fertilizing, harvesting) across 25 dynamic seasonal turns. By simulating 1,000 stochastic weather rollouts (Drought, Sunny, Rain), the agent generates **\$697 in total commercial revenue** (+83.4% gain over greedy baselines) while maintaining a **flawless 100/100 Environmental Sustainability Index** and conserving 40% of baseline water reserves.
+Kaggriculture is a local 4x4 farm simulator with a UCT MCTS agent. The $697 revenue and +83.4% figures previously printed here were not produced by the current code. Run `python -m kaggriculture.elo` for a seed-dependent Elo table on this simulator. There is no public leaderboard score in this repo, and no official environment spec was available to diff against.
 
 ---
 
@@ -62,7 +62,7 @@ $$R(s, a, s') = R_{\text{revenue}}(a) - \lambda_{\text{water}} \cdot \Delta W - 
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Random Baseline** | 25 / 25 | 1 | \$110 | 42 / 100 (Degraded) | 12 units |
 | **Greedy Heuristic** | 25 / 25 | 3 | \$380 | 68 / 100 (Depleted) | 18 units |
-| **Kaggriculture MCTS (Ours)** | **25 / 25** | **5** | **\$697 (+83.4%)** | **100 / 100 (Flawless)** | **40 units (Conserved)** |
+| Kaggriculture MCTS | local sim only | — | see `python -m kaggriculture.elo` | not a leaderboard score | — |
 
 All 4 automated unit and integration tests passing with 100% success (`npm test`).
 
