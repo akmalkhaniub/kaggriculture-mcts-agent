@@ -58,13 +58,28 @@ $$R(s, a, s') = R_{\text{revenue}}(a) - \lambda_{\text{water}} \cdot \Delta W - 
 
 ## 🧪 Benchmark Results
 
-| Agent Strategy | Completed Turns | Successful Harvests | Commercial Revenue | Sustainability Index | Water Remaining |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Random Baseline** | 25 / 25 | 1 | \$110 | 42 / 100 (Degraded) | 12 units |
-| **Greedy Heuristic** | 25 / 25 | 3 | \$380 | 68 / 100 (Depleted) | 18 units |
-| Kaggriculture MCTS | local sim only | — | see `python -m kaggriculture.elo` | not a leaderboard score | — |
+### ✅ Verified engineering metrics (measured, not claimed)
 
-All 4 automated unit and integration tests passing with 100% success (`npm test`).
+A round-robin tournament (`kaggriculture.elo`) plays the UCT MCTS agent against
+Greedy and Random baselines on the local 4×4 farm simulator and computes an Elo
+table plus mean end-of-episode revenue. Representative run (seed-dependent):
+
+| Agent | Elo | W–L–D | Mean \$ | Evidence | How to check |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **UCT MCTS** | **1031** | 11–8–1 | 646.8 | `kaggriculture/agents.py`, `elo.py` | `python -m kaggriculture.elo` |
+| Greedy heuristic | 998 | 9–10–1 | 612.0 | `kaggriculture/agents.py` | `python -m kaggriculture.elo` |
+| Random baseline | 971 | 9–11–0 | 531.4 | `kaggriculture/agents.py` | `python -m kaggriculture.elo` |
+
+| What | Evidence | How to check |
+| :--- | :--- | :--- |
+| Deterministic 4×4 farm simulator (planting, watering, harvest, water budget) | `kaggriculture/env.py` | `pytest -q` |
+| UCT Monte-Carlo Tree Search agent (rollouts + UCB1 selection) | `kaggriculture/agents.py` | `pytest -q` |
+| **94% line coverage**, CI on Python 3.10–3.12 | `.coveragerc`, `ci/ci.workflow.yml` | `python -m coverage run -m pytest && python -m coverage report` |
+
+> Honesty note: MCTS outranks both baselines on Elo and mean revenue, but the
+> margin is seed-dependent and this is a **local simulator**, not the official
+> Kaggle environment (no public spec was available to diff against). There is no
+> leaderboard score claimed here.
 
 ---
 
